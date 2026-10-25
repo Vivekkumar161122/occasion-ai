@@ -20,6 +20,7 @@ export function sanitizeInput(input: unknown, maxLength = 500): string {
   let text = String(input).trim()
 
   // Remove control characters (except newline and tab)
+  // eslint-disable-next-line no-control-regex
   text = text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
 
   // Remove potential malicious script/style/iframe tags

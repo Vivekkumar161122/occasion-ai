@@ -10,61 +10,35 @@ interface EventModalProps {
   initialEvent?: OccasionEvent | null
 }
 
-export const EventModal: React.FC<EventModalProps> = ({
-  isOpen,
+const EventDialogContent: React.FC<Omit<EventModalProps, 'isOpen'>> = ({
   onClose,
   onSave,
   initialEvent,
 }) => {
   const isEditing = Boolean(initialEvent)
 
-  const [title, setTitle] = useState('')
-  const [type, setType] = useState<EventType>('wedding')
-  const [date, setDate] = useState('')
-  const [location, setLocation] = useState('')
-  const [guestCount, setGuestCount] = useState('100')
-  const [targetBudget, setTargetBudget] = useState('15000')
-  const [currency, setCurrency] = useState<CurrencyCode>('USD')
-  const [vibe, setVibe] = useState('')
-  const [notes, setNotes] = useState('')
-
-  useEffect(() => {
-    if (initialEvent) {
-      setTitle(initialEvent.title)
-      setType(initialEvent.type)
-      setDate(initialEvent.date)
-      setLocation(initialEvent.location)
-      setGuestCount(String(initialEvent.guestCount))
-      setTargetBudget(String(initialEvent.targetBudget))
-      setCurrency(initialEvent.currency)
-      setVibe(initialEvent.vibe || '')
-      setNotes(initialEvent.notes || '')
-    } else {
-      // Set defaults for new event
-      setTitle('')
-      setType('wedding')
-      setDate(new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
-      setLocation('')
-      setGuestCount('100')
-      setTargetBudget('20000')
-      setCurrency('USD')
-      setVibe('Warm, memorable, and celebratory')
-      setNotes('')
-    }
-  }, [initialEvent, isOpen])
+  const [title, setTitle] = useState(initialEvent?.title || '')
+  const [type, setType] = useState<EventType>(initialEvent?.type || 'wedding')
+  const [date, setDate] = useState(() =>
+    initialEvent?.date || new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  )
+  const [location, setLocation] = useState(initialEvent?.location || '')
+  const [guestCount, setGuestCount] = useState(initialEvent ? String(initialEvent.guestCount) : '100')
+  const [targetBudget, setTargetBudget] = useState(initialEvent ? String(initialEvent.targetBudget) : '20000')
+  const [currency, setCurrency] = useState<CurrencyCode>(initialEvent?.currency || 'USD')
+  const [vibe, setVibe] = useState(initialEvent?.vibe || (initialEvent ? '' : 'Warm, memorable, and celebratory'))
+  const [notes, setNotes] = useState(initialEvent?.notes || '')
 
   // Handle escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === 'Escape') {
         onClose()
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, onClose])
-
-  if (!isOpen) return null
+  }, [onClose])
 
   const handleApplyPreset = (presetType: EventType) => {
     setType(presetType)
@@ -339,3 +313,9 @@ export const EventModal: React.FC<EventModalProps> = ({
     </div>
   )
 }
+
+export const EventModal: React.FC<EventModalProps> = (props) => {
+  if (!props.isOpen) return null
+  return <EventDialogContent {...props} />
+}
+

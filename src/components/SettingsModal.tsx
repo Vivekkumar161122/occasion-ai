@@ -18,37 +18,28 @@ interface SettingsModalProps {
   onResetData: () => void
 }
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({
-  isOpen,
+const SettingsDialogContent: React.FC<Omit<SettingsModalProps, 'isOpen'>> = ({
   onClose,
   settings,
   onSaveSettings,
   onExportData,
   onResetData,
 }) => {
-  const [apiKey, setApiKey] = useState('')
-  const [useCustomKey, setUseCustomKey] = useState(false)
-  const [model, setModel] = useState<'gemini-2.5-flash' | 'gemini-2.5-pro'>('gemini-2.5-flash')
+  const [apiKey, setApiKey] = useState(settings.apiKey || '')
+  const [useCustomKey, setUseCustomKey] = useState(settings.useCustomKey || false)
+  const [model, setModel] = useState<'gemini-2.5-flash' | 'gemini-2.5-pro'>(settings.model || 'gemini-2.5-flash')
   const [showResetConfirm, setShowResetConfirm] = useState(false)
-
-  useEffect(() => {
-    setApiKey(settings.apiKey || '')
-    setUseCustomKey(settings.useCustomKey || false)
-    setModel(settings.model || 'gemini-2.5-flash')
-  }, [settings, isOpen])
 
   // Handle escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === 'Escape') {
         onClose()
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, onClose])
-
-  if (!isOpen) return null
+  }, [onClose])
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault()
@@ -251,3 +242,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     </div>
   )
 }
+
+export const SettingsModal: React.FC<SettingsModalProps> = (props) => {
+  if (!props.isOpen) return null
+  return <SettingsDialogContent {...props} />
+}
+

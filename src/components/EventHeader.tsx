@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import {
   Calendar,
   CheckCircle2,
@@ -29,10 +29,12 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
   onEditEvent,
 }) => {
   // Compute countdown
-  const now = new Date()
-  const targetDate = new Date(event.date + 'T00:00:00')
-  const diffTime = targetDate.getTime() - now.getTime()
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  const [currentTimestamp] = useState(() => Date.now())
+  const diffDays = useMemo(() => {
+    const targetDate = new Date(event.date + 'T00:00:00')
+    const diffTime = targetDate.getTime() - currentTimestamp
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  }, [event.date, currentTimestamp])
 
   // Budget calculations
   const totalActual = budgetItems.reduce((acc, b) => acc + (b.actualCost || 0), 0)

@@ -318,7 +318,7 @@ export const App: React.FC = () => {
         } else {
           alert('Invalid backup file format.')
         }
-      } catch (err) {
+      } catch {
         alert('Could not parse backup file.')
       }
     }
