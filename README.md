@@ -2,6 +2,9 @@
 
 [![OccasionAI CI](https://github.com/Vivekkumar161122/occasion-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Vivekkumar161122/occasion-ai/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=flat&logo=vercel)](https://occasion-ai.vercel.app/)
+
+> 🌐 **Live Demo:** [https://occasion-ai.vercel.app](https://occasion-ai.vercel.app/)
 
 OccasionAI is an intelligent, creative, and privacy-focused event planning assistant designed to organize **Weddings**, **Birthdays**, and **Community Events** with budgets, timelines, vendor checklists, and personalized GenAI ideas.
 
