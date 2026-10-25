@@ -3,7 +3,12 @@
  * Implements strict client-side defense against XSS, prototype pollution, and malformed inputs.
  */
 
-// Escape HTML special characters for safe text display
+/**
+ * Escapes standard HTML special characters to prevent HTML/XSS injection when interpolating strings into markup.
+ *
+ * @param str - The raw untrusted string to escape.
+ * @returns Escaped safe text representation.
+ */
 export function escapeHTML(str: string): string {
   if (typeof str !== 'string') return ''
   return str
@@ -14,7 +19,14 @@ export function escapeHTML(str: string): string {
     .replace(/'/g, '&#039;')
 }
 
-// Clean text input: strips script tags, iframe, event handlers, javascript: pseudo-protocols
+/**
+ * Cleans text input by stripping script tags, style sheets, iframes, inline event handlers,
+ * and dangerous URI schemes (like javascript:), while enforcing length constraints.
+ *
+ * @param input - Untrusted input from forms, local storage, or network responses.
+ * @param maxLength - Maximum permitted character length (default 500).
+ * @returns Sanitized text string.
+ */
 export function sanitizeInput(input: unknown, maxLength = 500): string {
   if (input === null || input === undefined) return ''
   let text = String(input).trim()
@@ -36,7 +48,16 @@ export function sanitizeInput(input: unknown, maxLength = 500): string {
   return text.slice(0, maxLength)
 }
 
-// Validate and sanitize numeric monetary and quantity values
+/**
+ * Validates, bounds, and rounds numerical input for currency, costs, or participant counts.
+ * Handles both number primitives and formatted strings containing currency symbols or commas.
+ *
+ * @param value - Untrusted value to parse as a number.
+ * @param fallback - Default numeric value returned if input cannot be parsed (default 0).
+ * @param min - Minimum lower bound constraint (default 0).
+ * @param max - Maximum upper bound constraint (default 1,000,000,000).
+ * @returns Bounded and 2-decimal rounded number.
+ */
 export function sanitizeNumber(value: unknown, fallback = 0, min = 0, max = 1_000_000_000): number {
   if (typeof value === 'number' && !isNaN(value) && isFinite(value)) {
     return Math.max(min, Math.min(max, Math.round(value * 100) / 100))
@@ -52,7 +73,13 @@ export function sanitizeNumber(value: unknown, fallback = 0, min = 0, max = 1_00
   return fallback
 }
 
-// Validate date string (YYYY-MM-DD or valid ISO date)
+/**
+ * Validates a date string against the standard YYYY-MM-DD calendar format.
+ * If the provided date is invalid or malformed, it defaults safely to today's date in UTC.
+ *
+ * @param dateStr - Candidate date string to validate.
+ * @returns Standardized YYYY-MM-DD date string.
+ */
 export function sanitizeDate(dateStr: unknown): string {
   if (typeof dateStr !== 'string') return new Date().toISOString().split('T')[0]
   const trimmed = dateStr.trim().slice(0, 10)
@@ -66,7 +93,12 @@ export function sanitizeDate(dateStr: unknown): string {
   return new Date().toISOString().split('T')[0]
 }
 
-// Validate and clean URL for vendor links
+/**
+ * Validates web links for vendors or venues, allowing only explicit http and https schemes.
+ *
+ * @param urlStr - Untrusted URL input.
+ * @returns Sanitized URL string or empty string if protocol is unsafe.
+ */
 export function sanitizeUrl(urlStr: unknown): string {
   if (typeof urlStr !== 'string') return ''
   const trimmed = urlStr.trim()

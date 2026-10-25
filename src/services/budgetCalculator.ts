@@ -1,27 +1,52 @@
 import { BudgetCategory, BudgetItem, CURRENCIES, CurrencyCode } from '../types'
 
+/**
+ * Aggregated metrics and budget consumption for an individual category.
+ */
 export interface CategorySummary {
+  /** Category key identifier */
   category: BudgetCategory
+  /** Human-readable display label */
   label: string
+  /** Sum of estimated expenses for this category */
   estimated: number
+  /** Sum of actual/confirmed expenses for this category */
   actual: number
+  /** Total count of line items registered in this category */
   itemCount: number
+  /** Percentage of overall target budget consumed by this category */
   percentageOfBudget: number
+  /** Hex color token assigned to this category for charts and badges */
   color: string
 }
 
+/**
+ * Top-level event budget health overview and financial summary.
+ */
 export interface BudgetSummary {
+  /** Total targeted/allocated budget cap for the event */
   targetBudget: number
+  /** Sum of all estimated item costs */
   totalEstimated: number
+  /** Sum of all actual confirmed item costs */
   totalActual: number
+  /** Total amount already marked as paid to vendors/suppliers */
   totalPaid: number
+  /** Remaining budget headroom before exceeding target */
   remainingTarget: number
-  variance: number // positive means under budget, negative means over budget
+  /** Variance against target (positive indicates surplus, negative indicates deficit) */
+  variance: number
+  /** Percentage of target budget currently committed or spent */
   percentSpent: number
+  /** Overall financial health status flag */
   status: 'safe' | 'warning' | 'danger'
+  /** Detailed breakdown sorted by highest expenditure */
   categories: CategorySummary[]
 }
 
+/**
+ * Visual design system mapping and labels for each budget category.
+ */
 export const CATEGORY_METADATA: Record<BudgetCategory, { label: string; color: string }> = {
   venue: { label: 'Venue & Facilities', color: '#6366f1' },
   catering: { label: 'Catering & Beverages', color: '#f59e0b' },
@@ -35,6 +60,13 @@ export const CATEGORY_METADATA: Record<BudgetCategory, { label: string; color: s
   miscellaneous: { label: 'Emergency Fund & Misc', color: '#64748b' },
 }
 
+/**
+ * Formats a numeric monetary quantity with the corresponding currency symbol and locale grouping.
+ *
+ * @param amount - The numerical amount to format.
+ * @param currency - ISO currency code (defaults to 'USD').
+ * @returns Formatted currency string (e.g. "$12,500" or "€450.50").
+ */
 export function formatCurrency(amount: number, currency: CurrencyCode = 'USD'): string {
   const config = CURRENCIES[currency] || CURRENCIES.USD
   const formatted = new Intl.NumberFormat('en-US', {
@@ -44,6 +76,14 @@ export function formatCurrency(amount: number, currency: CurrencyCode = 'USD'): 
   return `${config.symbol}${formatted}`
 }
 
+/**
+ * Calculates comprehensive financial summaries, category distribution, and risk alerts
+ * based on target budget and line items.
+ *
+ * @param targetBudget - Overall budget target set for the event.
+ * @param items - List of budget line items belonging to the event.
+ * @returns Complete BudgetSummary object containing totals, variances, and category metrics.
+ */
 export function calculateBudgetSummary(
   targetBudget: number,
   items: BudgetItem[]

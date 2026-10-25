@@ -51,4 +51,16 @@ describe('OccasionAI Application Integration Tests', () => {
     expect(screen.getByText(/OccasionAI Settings & AI Config/i)).toBeInTheDocument()
     expect(screen.getByText(/100% Client-Side Privacy/i)).toBeInTheDocument()
   })
+
+  it('renders interactive chat in AI Studio tab with prompt suggestions', () => {
+    render(<App />)
+
+    // Switch to Ask OccasionAI sub-tab in AI Studio
+    const chatTab = screen.getByRole('tab', { name: /Ask OccasionAI/i })
+    fireEvent.click(chatTab)
+
+    expect(screen.getByText(/OccasionAI Event Strategist/i)).toBeInTheDocument()
+    expect(screen.getByText(/Ask anything about your wedding/i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/Ask anything/i)).toBeInTheDocument()
+  })
 })

@@ -7,13 +7,12 @@ import {
   Clock,
   DollarSign,
   Palette,
-  Send,
   Sparkles,
   Users,
 } from 'lucide-react'
-import { generateLocalIdeas, queryGeminiAI } from '../services/aiPlanner'
+import { AIChatPanel } from './AIChatPanel'
+import { generateLocalIdeas } from '../services/aiPlanner'
 import { formatCurrency } from '../services/budgetCalculator'
-import { sanitizeInput } from '../services/sanitizer'
 import {
   AISettings,
   BudgetItem,
@@ -41,9 +40,6 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
   onApplyVendors,
 }) => {
   const [activeTab, setActiveTab] = useState<AIModuleTab>('concept')
-  const [customPrompt, setCustomPrompt] = useState('')
-  const [chatLog, setChatLog] = useState<{ role: 'user' | 'ai'; text: string }[]>([])
-  const [isLoading, setIsLoading] = useState(false)
   const [appliedNotice, setAppliedNotice] = useState<string | null>(null)
 
   // Generate current recommendation based on active event
@@ -104,29 +100,6 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
   const showNotice = (msg: string) => {
     setAppliedNotice(msg)
     setTimeout(() => setAppliedNotice(null), 3500)
-  }
-
-  const handleSendChat = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!customPrompt.trim() || isLoading) return
-
-    const userText = sanitizeInput(customPrompt, 300)
-    setChatLog((prev) => [...prev, { role: 'user', text: userText }])
-    setCustomPrompt('')
-    setIsLoading(true)
-
-    try {
-      const response = await queryGeminiAI(event, aiSettings, userText)
-      setChatLog((prev) => [...prev, { role: 'ai', text: response }])
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : 'Error generating response'
-      setChatLog((prev) => [
-        ...prev,
-        { role: 'ai', text: `Sorry, could not process: ${msg}` },
-      ])
-    } finally {
-      setIsLoading(false)
-    }
   }
 
   const hasApiKey = Boolean(
@@ -503,125 +476,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
 
       {/* Tab 5: Ask OccasionAI (Interactive Chat) */}
       {activeTab === 'chat' && (
-        <div className="glass-card" style={{ padding: '24px' }}>
-          <div style={{ marginBottom: '16px' }}>
-            <h3 style={{ fontSize: '1.35rem' }}>Interactive Planning Assistant</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginTop: '4px' }}>
-              Ask anything about your wedding, birthday, or community event—from seating arrangements to vendor questions
-            </p>
-          </div>
-
-          {/* Chat history */}
-          <div style={{
-            background: 'var(--bg-secondary)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: 'var(--radius-md)',
-            padding: '20px',
-            minHeight: '260px',
-            maxHeight: '440px',
-            overflowY: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-            marginBottom: '16px',
-          }} role="log" aria-live="polite">
-            {chatLog.length === 0 ? (
-              <div style={{ textAlign: 'center', color: 'var(--text-muted)', margin: 'auto 0' }}>
-                <Bot size={36} color="var(--primary-500)" style={{ margin: '0 auto 8px', opacity: 0.8 }} aria-hidden="true" />
-                <p>Hello! I am OccasionAI. How can I help plan your celebration today?</p>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
-                  <button
-                    onClick={() => setCustomPrompt('Suggest 3 creative signature cocktail recipes matching our theme')}
-                    className="btn-secondary"
-                    style={{ fontSize: '0.78rem', padding: '6px 12px' }}
-                  >
-                    🍸 Signature Cocktails
-                  </button>
-                  <button
-                    onClick={() => setCustomPrompt('How should I structure the day-of photography timeline?')}
-                    className="btn-secondary"
-                    style={{ fontSize: '0.78rem', padding: '6px 12px' }}
-                  >
-                    📸 Photography Timeline
-                  </button>
-                  <button
-                    onClick={() => setCustomPrompt('What are critical questions to ask before booking our venue?')}
-                    className="btn-secondary"
-                    style={{ fontSize: '0.78rem', padding: '6px 12px' }}
-                  >
-                    🏰 Venue Questions
-                  </button>
-                </div>
-              </div>
-            ) : (
-              chatLog.map((msg, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                    maxWidth: '85%',
-                  }}
-                >
-                  <div style={{
-                    fontSize: '0.75rem',
-                    color: 'var(--text-muted)',
-                    marginBottom: '4px',
-                    textAlign: msg.role === 'user' ? 'right' : 'left',
-                  }}>
-                    {msg.role === 'user' ? 'You' : 'OccasionAI'}
-                  </div>
-                  <div
-                    style={{
-                      background: msg.role === 'user' ? 'var(--primary-600)' : 'var(--bg-card)',
-                      color: '#ffffff',
-                      padding: '12px 16px',
-                      borderRadius: 'var(--radius-md)',
-                      border: msg.role === 'user' ? 'none' : '1px solid var(--border-medium)',
-                      whiteSpace: 'pre-wrap',
-                      fontSize: '0.9rem',
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    {msg.text}
-                  </div>
-                </div>
-              ))
-            )}
-
-            {isLoading && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-muted)', fontSize: '0.88rem' }}>
-                <Sparkles size={16} className="pulse-glow" color="var(--primary-500)" />
-                <span>OccasionAI is synthesizing recommendations...</span>
-              </div>
-            )}
-          </div>
-
-          {/* Chat Form */}
-          <form onSubmit={handleSendChat} style={{ display: 'flex', gap: '10px' }}>
-            <input
-              type="text"
-              value={customPrompt}
-              onChange={(e) => setCustomPrompt(e.target.value)}
-              placeholder="Ask anything (e.g. 'Give me budget tips for 100 guests' or 'Music playlist genres')..."
-              className="form-control"
-              style={{ flex: 1 }}
-              aria-label="Ask OccasionAI message prompt"
-              disabled={isLoading}
-            />
-            <button
-              type="submit"
-              className="btn-primary"
-              style={{ padding: '10px 20px' }}
-              disabled={isLoading || !customPrompt.trim()}
-              aria-label="Send query"
-            >
-              <Send size={16} aria-hidden="true" />
-              <span>Send</span>
-            </button>
-          </form>
-        </div>
+        <AIChatPanel event={event} aiSettings={aiSettings} />
       )}
     </div>
   )

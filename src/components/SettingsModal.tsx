@@ -157,7 +157,7 @@ const SettingsDialogContent: React.FC<Omit<SettingsModalProps, 'isOpen'>> = ({
                     id="gemini-model-select"
                     className="form-control"
                     value={model}
-                    onChange={(e) => setModel(e.target.value as any)}
+                    onChange={(e) => setModel(e.target.value === 'gemini-2.5-pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash')}
                   >
                     <option value="gemini-2.5-flash" style={{ background: '#1e293b' }}>
                       Gemini 2.5 Flash (Ultra-fast, Recommended)
