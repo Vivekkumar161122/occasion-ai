@@ -1,4 +1,4 @@
-# 🌟 OccasionAI — GenAI-Powered Event Planning Assistant
+# 🌟 occasion-ai: GenAI-Powered Event Planning Assistant
 
 [![OccasionAI CI](https://github.com/Vivekkumar161122/OccasionAI/actions/workflows/ci.yml/badge.svg)](https://github.com/Vivekkumar161122/OccasionAI/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
