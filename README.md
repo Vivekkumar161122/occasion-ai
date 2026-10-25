@@ -1,6 +1,6 @@
 # 🌟 occasion-ai: GenAI-Powered Event Planning Assistant
 
-[![OccasionAI CI](https://github.com/Vivekkumar161122/OccasionAI/actions/workflows/ci.yml/badge.svg)](https://github.com/Vivekkumar161122/OccasionAI/actions/workflows/ci.yml)
+[![OccasionAI CI](https://github.com/Vivekkumar161122/occasion-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Vivekkumar161122/occasion-ai/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 OccasionAI is an intelligent, creative, and privacy-focused event planning assistant designed to organize **Weddings**, **Birthdays**, and **Community Events** with budgets, timelines, vendor checklists, and personalized GenAI ideas.
@@ -59,8 +59,8 @@ OccasionAI is an intelligent, creative, and privacy-focused event planning assis
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/occasionai.git
-cd occasionai
+git clone https://github.com/Vivekkumar161122/occasion-ai.git
+cd occasion-ai
 
 # Install dependencies
 npm install
