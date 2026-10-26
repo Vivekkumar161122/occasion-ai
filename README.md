@@ -6,7 +6,7 @@
 
 > 🌐 **Live Demo:** [https://occasion-ai.vercel.app](https://occasion-ai.vercel.app/)
 
-OccasionAI is an intelligent, creative, and privacy-focused event planning assistant designed to organize **Weddings**, **Birthdays**, and **Community Events** with budgets, timelines, vendor checklists and personalized GenAI ideas.
+OccasionAI is an intelligent, creative, and privacy-focused event planning assistant designed to organize **Weddings**, **Birthdays** and **Community Events** with budgets, timelines, vendor checklists and personalized GenAI ideas.
 
 ---
 
